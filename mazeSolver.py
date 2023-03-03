@@ -2,11 +2,6 @@ from colorama import Fore, Style,init
 from sys import argv
 
 
-
-# print(Fore.RED + 'some red text')
-# print(Back.GREEN + 'and with a green background')
-# print(Style.DIM + 'and in dim text')
-# print(Style.RESET_ALL)
 color=init()
 class node:
     def __init__(self,state):
@@ -77,6 +72,9 @@ if len(argv)>1:
 size_x=len(mat)
 size_y=len(mat[0])
 def printMaze(matrix):
+    """
+    Function Used to Print Matrix in Maze Format
+    """
     for i in matrix:
         for j in i:
             if j=='-':
@@ -89,22 +87,40 @@ def printMaze(matrix):
         print()
 
 def moveRight(state):
+    """
+    For checking avaibility of RIGHT move
+    """
     if state[1]+1<len(mat[0]) and mat[state[0]][state[1]+1]!='#':
         return True
     return False
+
 def moveLeft(state):
+    """
+    For checking avaibility of LEFT move
+    """
     if state[1]-1>=0 and mat[state[0]][state[1]-1]!='#':
         return True
     return False
+
 def moveUp(state):
+    """
+    For checking avaibility of UP move
+    """
     if state[0]-1>=0 and mat[state[0]-1][state[1]]!='#':
         return True
     return False
 def moveDown(state):
-        if state[0]+1<len(mat) and mat[state[0]+1][state[1]]!='#':
-            return True
-        return False
+    """
+    For checking avaibility of Down move
+    """
+    if state[0]+1<len(mat) and mat[state[0]+1][state[1]]!='#':
+        return True
+    return False
+
 def actions(state,nodeList):
+    """
+    Returns Available Actions on Perticular State
+    """
     moves=[]
     if moveRight(state):
         for i in nodeList:
@@ -123,6 +139,7 @@ def actions(state,nodeList):
             if i.state==(state[0]+1,state[1]):
                 moves.append(i)
     return moves
+
 nodes=[]
 for i in range(size_x):
     for j in range(size_y):
@@ -133,9 +150,11 @@ for i in range(size_x):
             initial_state=n            
         nodes.append(n)
 
-# Use StackFrontier for Depth First Search and
-# Use QueueFrontier for Bredth First Search
+
 def findSolution(frontier,show_state_searched=False):
+    """
+    Function to find Solution Based on AI Search Approach
+    """
     visited=[]
     path=[]
     while True:
@@ -146,7 +165,8 @@ def findSolution(frontier,show_state_searched=False):
         else:
             temp=frontier.deleteNode()
             if temp!=goal_state and temp!=initial_state:
-                mat[temp.state[0]][temp.state[1]]="-"
+                if show_state_searched:
+                    mat[temp.state[0]][temp.state[1]]="-"
             visited.append(temp)
             if temp==goal_state:
                 print(Fore.GREEN+"Reached Goal")
@@ -168,6 +188,9 @@ def findSolution(frontier,show_state_searched=False):
                         node.parent=temp
                         frontier.insertNode(node)
 
+
+# Use StackFrontier for Depth First Search
+# Use QueueFrontier for Bredth First Search
 frontier=QueueFrontier(initial_state)
-findSolution(frontier)
+findSolution(frontier,show_state_searched=True)
 printMaze(mat)
